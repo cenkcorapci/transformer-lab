@@ -21,8 +21,8 @@ spdlog::logger& get_logger(std::string_view name) {
         auto sink   = std::make_shared<spdlog::sinks::stdout_color_sink_mt>();
         auto logger = spdlog::logger(key, sink);
         logger.set_level(spdlog::level::info);
-        auto [inserted, ok] = g_loggers.emplace(key, std::move(logger));
-        (void)ok;
+        auto [inserted, inserted_successfully] = g_loggers.emplace(key, std::move(logger));
+        (void)inserted_successfully;
         return inserted->second;
     }
     return it->second;

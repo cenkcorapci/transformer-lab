@@ -96,9 +96,10 @@ std::span<const T> Tensor::data_as() const {
 }
 
 // Explicit instantiations for common types
-template std::span<float>        Tensor::data_as<float>();
-template std::span<const float>  Tensor::data_as<float>() const;
-template std::span<std::int32_t> Tensor::data_as<std::int32_t>();
+template std::span<float>             Tensor::data_as<float>();
+template std::span<const float>       Tensor::data_as<float>() const;
+template std::span<std::int32_t>      Tensor::data_as<std::int32_t>();
+template std::span<const std::int32_t> Tensor::data_as<std::int32_t>() const;
 
 // ─── Fill helpers ─────────────────────────────────────────────────────────────
 

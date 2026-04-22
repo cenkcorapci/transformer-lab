@@ -29,6 +29,9 @@ Buffer::Buffer(std::size_t size_bytes, StorageMode mode) : impl_(std::make_uniqu
     // Fallback: plain heap allocation so non-Metal builds work.
     if (!impl_->contents && mode != StorageMode::Private) {
         impl_->contents = std::malloc(size_bytes); // NOLINT
+        if (!impl_->contents) {
+            impl_->size_bytes = 0; // mark invalid on allocation failure
+        }
     }
 }
 
