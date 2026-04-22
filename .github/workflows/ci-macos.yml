@@ -1,0 +1,62 @@
+name: CI macOS
+
+on:
+  push:
+    branches: ["main", "master", "develop"]
+  pull_request:
+    branches: ["main", "master", "develop"]
+
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  build-and-test:
+    name: Build & Test (macOS)
+    runs-on: macos-latest
+
+    strategy:
+      fail-fast: false
+      matrix:
+        build_type: [Debug, Release]
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Install Ninja
+        run: brew install ninja
+
+      - name: Cache CMake dependencies
+        uses: actions/cache@v4
+        with:
+          path: |
+            build/_deps
+          key: ${{ runner.os }}-cmake-deps-${{ hashFiles('cmake/Dependencies.cmake') }}
+          restore-keys: |
+            ${{ runner.os }}-cmake-deps-
+
+      - name: Configure CMake
+        run: |
+          cmake -B build \
+            -G Ninja \
+            -DCMAKE_BUILD_TYPE=${{ matrix.build_type }} \
+            -DCMAKE_EXPORT_COMPILE_COMMANDS=ON \
+            -DMTL_ENABLE_TESTS=ON \
+            -DMTL_ENABLE_BENCHMARKS=ON \
+            -DMTL_ENABLE_METAL=ON
+
+      - name: Build
+        run: cmake --build build --parallel
+
+      - name: Run unit tests
+        working-directory: build
+        run: ctest --output-on-failure --parallel 4
+
+      - name: Run benchmarks (smoke test)
+        working-directory: build
+        run: |
+          ./benchmarks_runner \
+            --benchmark_format=console \
+            --benchmark_filter="BM_TensorAlloc/1024" \
+            --benchmark_repetitions=1

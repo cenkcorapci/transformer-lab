@@ -39,3 +39,60 @@
 
 # debug information files
 *.dwo
+
+# CMake build directories
+build/
+build-*/
+cmake-build-*/
+CMakeFiles/
+CMakeCache.txt
+cmake_install.cmake
+install_manifest.txt
+CTestTestfile.cmake
+_deps/
+
+# Ninja
+.ninja_deps
+.ninja_log
+
+# Xcode
+*.xcodeproj/
+*.xcworkspace/
+xcuserdata/
+*.xccheckout
+*.xcscmblueprint
+DerivedData/
+
+# macOS
+.DS_Store
+.AppleDouble
+.LSOverride
+._*
+.Spotlight-V100
+.Trashes
+
+# Metal compiled libraries
+*.metallib
+*.air
+
+# CLion / IntelliJ
+.idea/
+*.iml
+
+# VSCode
+.vscode/
+!.vscode/extensions.json
+!.vscode/settings.json.example
+
+# clangd
+.cache/
+
+# Logs
+*.log
+
+# Conan / vcpkg
+conanbuildinfo.*
+conaninfo.txt
+graph_info.json
+vcpkg_installed/
+

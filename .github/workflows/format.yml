@@ -1,0 +1,32 @@
+name: Format Check
+
+on:
+  push:
+    branches: ["main", "master", "develop"]
+  pull_request:
+    branches: ["main", "master", "develop"]
+
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  clang-format:
+    name: clang-format check
+    runs-on: macos-latest
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Install clang-format
+        run: |
+          brew install clang-format || true
+          clang-format --version
+
+      - name: Check formatting
+        run: |
+          find . \
+            \( -path ./build -o -path ./_deps \) -prune \
+            -o \( -name "*.cpp" -o -name "*.hpp" -o -name "*.h" \) -print \
+            | xargs clang-format --dry-run --Werror --style=file
